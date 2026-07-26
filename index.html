@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title id="pageTitle">PORTFOLIO.EXE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --desktop-teal: #018281;
+            --face: #c3c3c3;
+            --face-light: #dcdcdc;
+            --hi: #ffffff;
+            --sh: #808080;
+            --sh-dark: #0a0a0a;
+            --title-a: #000878;
+            --title-b: #1084d0;
+            --title-inactive: #7b7b7b;
+            --select-blue: #000878;
+            --black: #000000;
+            --crt-green: #00ff41;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: none;
+            font-smooth: never;
+            text-rendering: optimizeSpeed;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--desktop-teal);
+            background-image:
+                linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, .05) 75%),
+                linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, .05) 75%);
+            background-size: 8px 8px;
+            background-position: 0 0, 4px 4px;
+            font-family: 'VT323', monospace;
+            image-rendering: pixelated;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><polygon points="2,1 2,16 6,12 9,18 11,17 8,11 13,11" fill="white" stroke="black" stroke-width="1"/></svg>') 2 1, auto;
+        }
+
+        body.wait-cursor,
+        body.wait-cursor * {
+            cursor: wait !important;
+        }
+
+        #root {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------- BOOT SCREEN ---------- */
+        #boot {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            color: #c3c3c3;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+            letter-spacing: 1px;
+        }
+
+        #boot .bios {
+            align-self: flex-start;
+            padding: 24px;
+            white-space: pre;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #b6b6b6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 0;
+        }
+        
+        #boot .boot-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        #boot .blink {
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #logoBuild {
+            display: grid;
+            grid-template-columns: repeat(4, 26px);
+            grid-template-rows: repeat(4, 26px);
+            gap: 4px;
+            margin: 0;
+        }
+
+        #logoBuild div {
+            width: 26px;
+            height: 26px;
+            opacity: 0;
+            transform: scale(.2);
+            transition: all .35s ease;
+        }
+
+        #logoBuild div.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .c1 {
+            background: #ff3d3d;
+        }
+
+        .c2 {
+            background: #3dff5d;
+        }
+
+        .c3 {
+            background: #3d7bff;
+        }
+
+        .c4 {
+            background: #ffd23d;
+        }
+
+        #bootCaption {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 3px;
+        }
+
+        #progressWrap {
+            width: 280px;
+            height: 18px;
+            border: 2px solid #c3c3c3;
+            margin: 0;
+            padding: 2px;
+        }
+
+        #progressBar {
+            height: 100%;
+            width: 0%;
+            background: repeating-linear-gradient(90deg, var(--select-blue) 0 8px, transparent 8px 12px);
+            transition: width 2.4s linear;
+        }
+
+        /* ---------- DESKTOP ---------- */
+        #desktop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 50px;
+            padding: 14px;
+            padding-left: 60px;
+            padding-right: 60px;
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(5, 92px);
+            gap: 3px 50px;
+            justify-content: start;
+            align-content: start;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+
+        .icon {
+            width: 84px;
+            height: 84px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 2px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .icon:focus,
+        .icon.selected {
+            outline: 1px dotted #fff;
+            background: rgba(0, 8, 120, 0.35);
+        }
+
+        .icon svg {
+            width: 38px;
+            height: 38px;
+            image-rendering: pixelated;
+        }
+
+        .icon span {
+            color: #fff;
+            font-family: 'Silkscreen', monospace;
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 1px 1px 0 #000;
+            line-height: 1.25;
+            padding: 0 2px;
+        }
+
+        .icon.selected span {
+            background: var(--select-blue);
+        }
+
+        /* ---------- WINDOWS ---------- */
+        .win {
+            position: absolute;
+            min-width: 280px;
+            max-width: calc(100vw - 20px);
+            max-height: calc(100vh - 50px);
+            background: var(--face);
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            box-shadow: 1px 1px 0 #000, 3px 3px 8px rgba(0, 0, 0, .5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .win.inactive .titlebar {
+            background: var(--title-inactive) !important;
+        }
+
+        .titlebar {
+            height: 26px;
+            background: linear-gradient(90deg, var(--title-a), var(--title-b));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3px 0 4px;
+            cursor: default;
+            flex-shrink: 0;
+        }
+
+        .titlebar .tleft {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .titlebar .ticon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .titlebar span.ttext {
+            color: #fff;
+            font-family: 'Silkscreen', monospace;
+            font-size: 12px;
+            letter-spacing: .5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tbtns {
+            display: flex;
+            gap: 2px;
+        }
+
+        .tbtn {
+            width: 18px;
+            height: 16px;
+            background: var(--face);
+            border: 1px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-family: monospace;
+            color: #000;
+            line-height: 1;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tbtn:active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+        }
+
+        .menubar {
+            height: 22px;
+            background: var(--face);
+            border-bottom: 1px solid var(--sh);
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .menubar span {
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .win-body {
+            flex: 1;
+            overflow: auto;
+            background: #fff;
+            padding: 14px;
+            border: 1px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            margin: 2px;
+            font-family: 'VT323', monospace;
+            font-size: 19px;
+            color: #111;
+            line-height: 1.35;
+        }
+
+        .win-body.explorer {
+            background: #fff;
+            padding: 10px;
+        }
+
+        .win-body::-webkit-scrollbar {
+            width: 16px;
+            height: 16px;
+        }
+
+        .win-body::-webkit-scrollbar-track {
+            background: var(--face);
+            border-left: 1px solid var(--sh);
+        }
+
+        .win-body::-webkit-scrollbar-thumb {
+            background: var(--face);
+            border: 1px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+        }
+
+        .win-body::-webkit-scrollbar-button {
+            background: var(--face);
+            height: 16px;
+            border: 1px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+        }
+
+        /* ---------- TOOLTIPS ---------- */
+        .icon {
+            position: relative;
+        }
+
+        .icon[data-tip]:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 4px;
+            background: #ffffe1;
+            color: #000;
+            border: 1px solid #000;
+            font-family: 'VT323', monospace;
+            font-size: 13px;
+            padding: 2px 6px;
+            white-space: nowrap;
+            z-index: 6000;
+            pointer-events: none;
+        }
+
+        /* ---------- CONTEXT MENU ---------- */
+        .ctx-menu {
+            position: fixed;
+            min-width: 170px;
+            background: var(--face);
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, .5);
+            z-index: 9500;
+            padding: 2px 0;
+        }
+
+        .ctx-item {
+            padding: 6px 14px;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .ctx-item:hover {
+            background: var(--select-blue);
+            color: #fff;
+        }
+
+        .ctx-item.disabled {
+            color: #999;
+            cursor: default;
+        }
+
+        .ctx-item.disabled:hover {
+            background: none;
+        }
+
+        .ctx-sep {
+            height: 1px;
+            background: var(--sh);
+            border-bottom: 1px solid var(--hi);
+            margin: 3px 4px;
+        }
+
+        .win-statusbar {
+            height: 20px;
+            background: var(--face);
+            border-top: 1px solid var(--hi);
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .win-statusbar .cell {
+            border: 1px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            padding: 0 6px;
+            margin-right: 6px;
+        }
+
+        h2.doc-title {
+            font-family: 'Silkscreen', monospace;
+            font-size: 16px;
+            margin: 0 0 12px 0;
+            color: #000878;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #999;
+            margin: 10px 0;
+        }
+
+        .proj-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 14px;
+        }
+
+        .proj-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .proj-item:hover {
+            background: #d6e4ff;
+        }
+
+        .proj-thumb {
+            width: 64px;
+            height: 64px;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            image-rendering: pixelated;
+        }
+
+        .proj-item span {
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+        }
+
+        .field {
+            margin-bottom: 10px;
+        }
+
+        .field label {
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            font-family: 'VT323', monospace;
+            font-size: 17px;
+            padding: 5px;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            background: #fff;
+        }
+
+        .btn95 {
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+            background: var(--face);
+            padding: 8px 16px;
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            cursor: pointer;
+        }
+
+        .btn95:active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+        }
+
+        /* ---------- MINESWEEPER ---------- */
+        .ms-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .ms-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--face);
+            padding: 6px;
+            margin-bottom: 6px;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+        }
+
+        .ms-counter {
+            background: #000;
+            color: #ff2b2b;
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            letter-spacing: 2px;
+            padding: 1px 6px;
+            border: 2px solid;
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .ms-face {
+            width: 32px;
+            height: 32px;
+            background: var(--face);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+        }
+
+        .ms-face:active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+        }
+
+        .ms-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 24px);
+            grid-template-rows: repeat(9, 24px);
+            border: 2px solid;
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+        }
+
+        .ms-cell {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Silkscreen', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            user-select: none;
+            cursor: pointer;
+            background: var(--face);
+            border: 2px solid;
+            border-color: var(--hi) var(--sh) var(--sh) var(--hi);
+        }
+
+        .ms-cell:active {
+            border-width: 1px;
+        }
+
+        .ms-cell.revealed {
+            background: #bdbdbd;
+            border: 1px solid #8f8f8f;
+            cursor: default;
+        }
+
+        .ms-cell.mine-hit {
+            background: #ff3d3d;
+        }
+
+        .ms-cell[data-n="1"] {
+            color: #0000ff;
+        }
+
+        .ms-cell[data-n="2"] {
+            color: #007800;
+        }
+
+        .ms-cell[data-n="3"] {
+            color: #ff0000;
+        }
+
+        .ms-cell[data-n="4"] {
+            color: #000078;
+        }
+
+        .ms-cell[data-n="5"] {
+            color: #780000;
+        }
+
+        .ms-cell[data-n="6"] {
+            color: #008080;
+        }
+
+        .ms-cell[data-n="7"] {
+            color: #000;
+        }
+
+        .ms-cell[data-n="8"] {
+            color: #808080;
+        }
+
+        .ms-status {
+            margin-top: 8px;
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+            color: #555;
+            text-align: center;
+        }
+
+        /* ---------- PAINT ---------- */
+        .paint-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .paint-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .paint-tools {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pt-btn {
+            min-width: 30px;
+            height: 28px;
+            padding: 0 6px;
+            background: var(--face);
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            font-size: 13px;
+            font-family: 'Silkscreen', monospace;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pt-btn.active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+            background: #d6d6d6;
+        }
+
+        .paint-palette {
+            display: grid;
+            grid-template-columns: repeat(10, 18px);
+            grid-auto-rows: 18px;
+            gap: 2px;
+            background: var(--face);
+            padding: 4px;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+        }
+
+        .paint-swatch {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #555;
+            cursor: pointer;
+        }
+
+        .paint-swatch.selected {
+            outline: 2px solid #000878;
+            outline-offset: 1px;
+        }
+
+        #paintCanvas {
+            background: #fff;
+            cursor: crosshair;
+            image-rendering: pixelated;
+            border: 2px solid;
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+        }
+
+        /* ---------- START MENU ---------- */
+        #startMenu {
+            position: fixed;
+            bottom: 34px;
+            left: 2px;
+            width: 220px;
+            background: var(--face);
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            display: none;
+            z-index: 5000;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, .5);
+        }
+
+        #startMenu.open {
+            display: flex;
+        }
+
+        .sm-banner {
+            width: 34px;
+            background: linear-gradient(180deg, #000878, #1084d0);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+
+        .sm-banner span {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            color: #fff;
+            font-family: 'Silkscreen', monospace;
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .sm-items {
+            flex: 1;
+            padding: 4px 0;
+        }
+
+        .sm-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 10px;
+            cursor: pointer;
+            font-family: 'Silkscreen', monospace;
+            font-size: 12px;
+            color: #000;
+        }
+
+        .sm-item:hover {
+            background: var(--select-blue);
+            color: #fff;
+        }
+
+        .sm-item svg {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .sm-sep {
+            height: 1px;
+            background: var(--sh);
+            margin: 4px 6px;
+            border-bottom: 1px solid var(--hi);
+        }
+
+        /* ---------- TASKBAR ---------- */
+        #taskbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 32px;
+            background: var(--face);
+            border-top: 2px solid var(--hi);
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            gap: 4px;
+            z-index: 4000;
+        }
+
+        #startBtn {
+            height: 26px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Silkscreen', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            cursor: pointer;
+        }
+
+        #startBtn.active,
+        #startBtn:active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+            background: #d6d6d6;
+        }
+
+        #startBtn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        #taskDivider {
+            width: 2px;
+            height: 24px;
+            border-left: 1px solid var(--sh);
+            border-right: 1px solid var(--hi);
+            margin: 0 2px;
+        }
+
+        #taskApps {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .task-btn {
+            height: 26px;
+            padding: 0 10px;
+            max-width: 170px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Silkscreen', monospace;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            border: 2px solid;
+            border-color: var(--hi) var(--sh-dark) var(--sh-dark) var(--hi);
+            cursor: pointer;
+            background: var(--face);
+        }
+
+        .task-btn.active {
+            border-color: var(--sh-dark) var(--hi) var(--hi) var(--sh-dark);
+            background: #b0b0b0;
+        }
+
+        .task-btn svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        #clock {
+            height: 26px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+        }
+
+        #trayWrap {
+            height: 26px;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid;
+            border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+            margin-right: 4px;
+        }
+
+        #muteBtn {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #muteBtn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ---------- RESPONSIVE DESIGN ---------- */
+        @media (max-width: 1024px) {
+            #desktop {
+                grid-auto-flow: row;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(4, 85px);
+                gap: 10px;
+                justify-items: start;
+                justify-content: start;
+            }
+
+            .icon {
+                width: 75px;
+                height: 75px;
+            }
+
+            .icon svg {
+                width: 34px;
+                height: 34px;
+            }
+
+            .icon span {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #desktop {
+                grid-auto-flow: row;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(3, 80px);
+                gap: 8px;
+                padding: 10px;
+                padding-bottom: 50px;
+                justify-items: start;
+                justify-content: start;
+            }
+
+            .icon {
+                width: 70px;
+                height: 70px;
+                gap: 2px;
+                padding: 4px 2px;
+            }
+
+            .icon svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .icon span {
+                font-size: 10px;
+            }
+
+            .win {
+                min-width: 200px !important;
+                max-width: calc(100vw - 20px) !important;
+            }
+
+            .win-body {
+                padding: 10px !important;
+                font-size: 16px !important;
+            }
+
+            .ms-grid {
+                grid-template-columns: repeat(9, 20px) !important;
+                grid-template-rows: repeat(9, 20px) !important;
+            }
+
+            .ms-cell {
+                width: 20px !important;
+                height: 20px !important;
+                font-size: 11px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #desktop {
+                grid-auto-flow: row;
+                grid-template-rows: auto;
+                grid-template-columns: repeat(2, 75px);
+                gap: 8px;
+                padding: 10px;
+                padding-bottom: 50px;
+                justify-items: start;
+                justify-content: start;
+            }
+
+            .icon {
+                width: 65px;
+                height: 65px;
+                gap: 2px;
+                padding: 3px 2px;
+            }
+
+            .icon svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .icon span {
+                font-size: 9px;
+                line-height: 1.1;
+            }
+
+            .win {
+                min-width: 160px !important;
+                max-width: calc(100vw - 10px) !important;
+            }
+
+            .titlebar {
+                height: 24px;
+                padding: 0 2px 0 3px;
+            }
+
+            .titlebar .ticon {
+                width: 14px;
+                height: 14px;
+            }
+
+            .titlebar span.ttext {
+                font-size: 10px;
+                letter-spacing: 0;
+            }
+
+            .tbtn {
+                width: 16px;
+                height: 14px;
+                font-size: 9px;
+            }
+
+            .win-body {
+                padding: 8px !important;
+                font-size: 14px !important;
+            }
+
+            #startMenu {
+                width: 180px;
+                bottom: 32px;
+                left: 0;
+            }
+
+            #taskbar {
+                height: 30px;
+            }
+
+            #startBtn {
+                height: 24px;
+                padding: 0 6px;
+                font-size: 11px;
+            }
+
+            #startBtn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .task-btn {
+                height: 24px;
+                max-width: 100px;
+                font-size: 10px;
+            }
+
+            .task-btn svg {
+                width: 12px;
+                height: 12px;
+            }
+
+            #clock {
+                font-size: 14px;
+                padding: 0 6px;
+                height: 24px;
+            }
+
+            #trayWrap {
+                height: 24px;
+                padding: 0 4px;
+            }
+
+            .ms-grid {
+                grid-template-columns: repeat(9, 18px) !important;
+                grid-template-rows: repeat(9, 18px) !important;
+            }
+
+            .ms-cell {
+                width: 18px !important;
+                height: 18px !important;
+                font-size: 10px !important;
+            }
+
+            .ms-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            #paintCanvas {
+                max-width: calc(100vw - 50px);
+                height: auto;
+            }
+
+            .proj-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 8px;
+            }
+
+            .proj-thumb {
+                width: 50px;
+                height: 50px;
+            }
+
+            .proj-item span {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+
+        <!-- BOOT SCREEN -->
+        <div id="boot">
+            <div class="bios" id="biosText"></div>
+            <div class="boot-center">
+                <div id="logoBuild">
+                    <div class="c1"></div>
+                    <div class="c2"></div>
+                    <div class="c1"></div>
+                    <div class="c2"></div>
+                    <div class="c3"></div>
+                    <div class="c4"></div>
+                    <div class="c3"></div>
+                    <div class="c4"></div>
+                    <div class="c2"></div>
+                    <div class="c1"></div>
+                    <div class="c2"></div>
+                    <div class="c1"></div>
+                    <div class="c4"></div>
+                    <div class="c3"></div>
+                    <div class="c4"></div>
+                    <div class="c3"></div>
+                </div>
+                <div id="bootCaption"></div>
+                <div id="progressWrap">
+                    <div id="progressBar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESKTOP -->
+        <div id="desktop">
+            <div class="icon" data-win="about" tabindex="0" data-tip="Read my bio">
+                <svg viewBox="0 0 32 32">
+                    <rect x="4" y="2" width="24" height="28" fill="#fff" stroke="#000" stroke-width="1" />
+                    <rect x="7" y="6" width="18" height="2" fill="#000878" />
+                    <rect x="7" y="10" width="18" height="1.5" fill="#999" />
+                    <rect x="7" y="14" width="14" height="1.5" fill="#999" />
+                    <rect x="7" y="18" width="16" height="1.5" fill="#999" />
+                    <rect x="4" y="2" width="24" height="4" fill="#000878" />
+                </svg>
+                <span>About_Me.txt</span>
+            </div>
+            <div class="icon" data-win="projects" tabindex="0" data-tip="6 items">
+                <svg viewBox="0 0 32 32">
+                    <path d="M2 8 L2 26 L30 26 L30 10 L16 10 L13 6 L2 6 Z" fill="#ffd23d" stroke="#000" />
+                    <path d="M2 8 L30 8 L30 26 L2 26 Z" fill="#ffe98a" stroke="#000" />
+                </svg>
+                <span>My Projects</span>
+            </div>
+            <div class="icon" data-win="branding" tabindex="0" data-tip="just messing around">
+                <svg viewBox="0 0 32 32">
+                    <rect x="3" y="3" width="26" height="26" fill="#fff" stroke="#000" />
+                    <circle cx="16" cy="14" r="7" fill="none" stroke="#3d7bff" stroke-width="3" />
+                    <rect x="7" y="23" width="18" height="3" fill="#ff3d3d" />
+                </svg>
+                <span>Logo_Lab.exe</span>
+            </div>
+            <div class="icon" data-win="contact" tabindex="0" data-tip="Say hello">
+                <svg viewBox="0 0 32 32">
+                    <rect x="2" y="6" width="28" height="20" fill="#fff" stroke="#000" stroke-width="1" />
+                    <path d="M2 6 L16 18 L30 6" fill="none" stroke="#000" stroke-width="1" />
+                </svg>
+                <span>Contact_Me.eml</span>
+            </div>
+            <div class="icon" data-win="bin" tabindex="0" data-tip="0 items">
+                <svg viewBox="0 0 32 32">
+                    <rect x="8" y="10" width="16" height="18" fill="#c3c3c3" stroke="#000" />
+                    <rect x="6" y="7" width="20" height="3" fill="#999" stroke="#000" />
+                    <rect x="13" y="4" width="6" height="3" fill="#999" stroke="#000" />
+                    <line x1="12" y1="13" x2="12" y2="25" stroke="#000" />
+                    <line x1="16" y1="13" x2="16" y2="25" stroke="#000" />
+                    <line x1="20" y1="13" x2="20" y2="25" stroke="#000" />
+                </svg>
+                <span>Recycle Bin</span>
+            </div>
+            <div class="icon" data-win="minesweeper" tabindex="0" data-tip="Take a break">
+                <svg viewBox="0 0 32 32">
+                    <rect x="2" y="2" width="28" height="28" fill="#c3c3c3" stroke="#000" />
+                    <circle cx="16" cy="16" r="9" fill="#000" />
+                    <rect x="14.5" y="4" width="3" height="6" fill="#000" />
+                    <rect x="14.5" y="22" width="3" height="6" fill="#000" />
+                    <rect x="4" y="14.5" width="6" height="3" fill="#000" />
+                    <rect x="22" y="14.5" width="6" height="3" fill="#000" />
+                    <rect x="12" y="11" width="4" height="4" fill="#fff" />
+                </svg>
+                <span>Minesweeper.exe</span>
+            </div>
+            <div class="icon" data-win="paint" tabindex="0" data-tip="Make some pixel art">
+                <svg viewBox="0 0 32 32">
+                    <rect x="4" y="10" width="14" height="16" fill="#c3c3c3" stroke="#000" />
+                    <rect x="4" y="8" width="14" height="3" fill="#000" />
+                </svg>
+                <span>Paint.exe</span>
+            </div>
+        </div>
+
+        <!-- START MENU -->
+        <div id="startMenu">
+            <div class="sm-banner"><span id="startBannerText"></span></div>
+            <div class="sm-items">
+                <div class="sm-item" data-win="about"><svg viewBox="0 0 32 32">
+                        <rect x="4" y="2" width="24" height="28" fill="#fff" stroke="#000" />
+                        <rect x="4" y="2" width="24" height="4" fill="#000878" />
+                    </svg>About Me</div>
+                <div class="sm-item" data-win="projects"><svg viewBox="0 0 32 32">
+                        <path d="M2 8 L2 26 L30 26 L30 10 L16 10 L13 6 L2 6 Z" fill="#ffd23d" stroke="#000" />
+                    </svg>My Projects</div>
+                <div class="sm-item" data-win="branding"><svg viewBox="0 0 32 32">
+                        <rect x="3" y="3" width="26" height="26" fill="#fff" stroke="#000" />
+                        <circle cx="16" cy="14" r="7" fill="none" stroke="#3d7bff" stroke-width="3" />
+                    </svg>Logo Lab</div>
+                <div class="sm-sep"></div>
+                <div class="sm-item" data-win="contact"><svg viewBox="0 0 32 32">
+                        <rect x="2" y="6" width="28" height="20" fill="#fff" stroke="#000" />
+                        <path d="M2 6 L16 18 L30 6" fill="none" stroke="#000" />
+                    </svg>Contact Me</div>
+                <div class="sm-sep"></div>
+                <div class="sm-item" data-win="minesweeper"><svg viewBox="0 0 32 32">
+                        <rect x="2" y="2" width="28" height="28" fill="#c3c3c3" stroke="#000" />
+                        <circle cx="16" cy="16" r="9" fill="#000" />
+                    </svg>Minesweeper</div>
+                <div class="sm-item" data-win="paint"><svg viewBox="0 0 32 32">
+                        <rect x="4" y="10" width="14" height="16" fill="#c3c3c3" stroke="#000" />
+                        <rect x="4" y="8" width="14" height="3" fill="#000" />
+                    </svg>Paint</div>
+                <div class="sm-sep"></div>
+                <div class="sm-item" id="shutdownBtn"><svg viewBox="0 0 32 32">
+                        <circle cx="16" cy="18" r="10" fill="none" stroke="#c00" stroke-width="3" />
+                        <line x1="16" y1="6" x2="16" y2="16" stroke="#c00" stroke-width="3" />
+                    </svg>Shut Down...</div>
+            </div>
+        </div>
+
+        <!-- TASKBAR -->
+        <div id="taskbar">
+            <div id="startBtn"><svg viewBox="0 0 32 32">
+                    <rect x="2" y="2" width="13" height="13" fill="#ff3d3d" />
+                    <rect x="17" y="2" width="13" height="13" fill="#3dff5d" />
+                    <rect x="2" y="17" width="13" height="13" fill="#3d7bff" />
+                    <rect x="17" y="17" width="13" height="13" fill="#ffd23d" />
+                </svg>Start</div>
+            <div id="taskDivider"></div>
+            <div id="taskApps"></div>
+            <div id="trayWrap">
+                <div id="muteBtn" title="Toggle sound"></div>
+            </div>
+            <div id="clock">12:00 AM</div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ===================== EDITABLE CONFIG ===================== */
+        const CONFIG = {
+            // Page title and branding
+            siteName: 'ABDULLAH_DESIGN',
+            siteVersion: '95',
+            
+            // About/Bio content
+            aboutTitle: 'ABOUT ME',
+            aboutText: `<p>Add your bio here. Tell people about yourself, your skills, and what you're passionate about.</p>`,
+            
+            // Projects - add your own projects here
+            projects: [
+                { title: 'Project 1', color1: '#ff6b6b', color2: '#ffd23d' },
+                { title: 'Project 2', color1: '#3d7bff', color2: '#dce8ff' },
+                { title: 'Project 3', color1: '#3dff5d', color2: '#0a5d1f' },
+                { title: 'Project 4', color1: '#ffd23d', color2: '#7a4b00' },
+                { title: 'Project 5', color1: '#c33dff', color2: '#f0dcff' },
+                { title: 'Project 6', color1: '#00c2c2', color2: '#003a3a' }
+            ],
+            
+            // Contact form message
+            contactNote: 'Wire this up to your email or contact form service'
+        };
+
+        /* ===================== PIXEL ICON SET ===================== */
+        const PIXEL_ICONS = { "about": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"3\" y=\"1\" width=\"10\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"2\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"2\" width=\"6\" height=\"1\" fill=\"#ffffff\"/><rect x=\"10\" y=\"2\" width=\"3\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"3\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"3\" width=\"6\" height=\"1\" fill=\"#ffffff\"/><rect x=\"10\" y=\"3\" width=\"2\" height=\"1\" fill=\"#a6a6a6\"/><rect x=\"12\" y=\"3\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"4\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"4\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"4\" width=\"6\" height=\"1\" fill=\"#000878\"/><rect x=\"11\" y=\"4\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"4\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"5\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"5\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"5\" width=\"6\" height=\"1\" fill=\"#000878\"/><rect x=\"11\" y=\"5\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"5\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"6\" width=\"8\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"7\" width=\"6\" height=\"1\" fill=\"#a6a6a6\"/><rect x=\"11\" y=\"7\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"8\" width=\"8\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"9\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"9\" width=\"4\" height=\"1\" fill=\"#a6a6a6\"/><rect x=\"9\" y=\"9\" width=\"3\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"10\" width=\"8\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"11\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"11\" width=\"6\" height=\"1\" fill=\"#a6a6a6\"/><rect x=\"11\" y=\"11\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"12\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"12\" width=\"8\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"12\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"13\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"13\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"13\" width=\"3\" height=\"1\" fill=\"#a6a6a6\"/><rect x=\"8\" y=\"13\" width=\"4\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"13\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"14\" width=\"10\" height=\"1\" fill=\"#000000\"/></svg>", "projects": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"1\" y=\"4\" width=\"6\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"5\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"5\" width=\"5\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"1\" y=\"6\" width=\"14\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"7\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"7\" width=\"11\" height=\"1\" fill=\"#ffe98a\"/><rect x=\"13\" y=\"7\" width=\"2\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"8\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"8\" width=\"11\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"13\" y=\"8\" width=\"2\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"9\" width=\"11\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"13\" y=\"9\" width=\"2\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"10\" width=\"11\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"13\" y=\"10\" width=\"2\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"11\" width=\"1\" height=\"1\" fill=\"#5c4400\"/><rect x=\"2\" y=\"11\" width=\"11\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"13\" y=\"11\" width=\"2\" height=\"1\" fill=\"#5c4400\"/><rect x=\"1\" y=\"12\" width=\"14\" height=\"1\" fill=\"#5c4400\"/></svg>", "branding": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"4\" y=\"3\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"5\" y=\"3\" width=\"6\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"11\" y=\"3\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"3\" y=\"4\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"4\" y=\"4\" width=\"2\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"6\" y=\"4\" width=\"2\" height=\"1\" fill=\"#22b14c\"/><rect x=\"8\" y=\"4\" width=\"4\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"12\" y=\"4\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"5\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"3\" y=\"5\" width=\"1\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"4\" y=\"5\" width=\"1\" height=\"1\" fill=\"#ff3d3d\"/><rect x=\"5\" y=\"5\" width=\"5\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"10\" y=\"5\" width=\"1\" height=\"1\" fill=\"#3d7bff\"/><rect x=\"11\" y=\"5\" width=\"2\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"13\" y=\"5\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"1\" y=\"6\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"6\" width=\"2\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\" fill=\"#ff3d3d\"/><rect x=\"5\" y=\"6\" width=\"1\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"6\" y=\"6\" width=\"3\" height=\"1\" fill=\"#ffffff\"/><rect x=\"9\" y=\"6\" width=\"1\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"10\" y=\"6\" width=\"1\" height=\"1\" fill=\"#3d7bff\"/><rect x=\"11\" y=\"6\" width=\"2\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"1\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"7\" width=\"4\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"6\" y=\"7\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"8\" y=\"7\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"9\" y=\"7\" width=\"5\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"14\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"1\" y=\"8\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"8\" width=\"4\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"6\" y=\"8\" width=\"3\" height=\"1\" fill=\"#ffffff\"/><rect x=\"9\" y=\"8\" width=\"4\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"13\" y=\"8\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"9\" width=\"10\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"12\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"13\" y=\"9\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"10\" width=\"7\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"9\" y=\"10\" width=\"2\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"11\" y=\"10\" width=\"1\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"12\" y=\"10\" width=\"3\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"2\" y=\"11\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"3\" y=\"11\" width=\"7\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"10\" y=\"11\" width=\"2\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"12\" y=\"11\" width=\"3\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"3\" y=\"12\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"4\" y=\"12\" width=\"6\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"10\" y=\"12\" width=\"3\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"4\" y=\"13\" width=\"1\" height=\"1\" fill=\"#3a2a10\"/><rect x=\"5\" y=\"13\" width=\"5\" height=\"1\" fill=\"#e8c88a\"/><rect x=\"10\" y=\"13\" width=\"3\" height=\"1\" fill=\"#8a5a2b\"/></svg>", "contact": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"1\" y=\"4\" width=\"14\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"5\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"5\" width=\"10\" height=\"1\" fill=\"#ffffff\"/><rect x=\"13\" y=\"5\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"3\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"6\" width=\"8\" height=\"1\" fill=\"#ffffff\"/><rect x=\"12\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"6\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"7\" width=\"2\" height=\"1\" fill=\"#ffffff\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"5\" y=\"7\" width=\"6\" height=\"1\" fill=\"#ffffff\"/><rect x=\"11\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"7\" width=\"2\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"7\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"8\" width=\"3\" height=\"1\" fill=\"#ffffff\"/><rect x=\"5\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"6\" y=\"8\" width=\"4\" height=\"1\" fill=\"#ffffff\"/><rect x=\"10\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"11\" y=\"8\" width=\"3\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"9\" width=\"4\" height=\"1\" fill=\"#ffffff\"/><rect x=\"6\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"1\" fill=\"#ffffff\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"10\" y=\"9\" width=\"4\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"10\" width=\"5\" height=\"1\" fill=\"#ffffff\"/><rect x=\"7\" y=\"10\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"9\" y=\"10\" width=\"5\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"2\" y=\"11\" width=\"12\" height=\"1\" fill=\"#ffffff\"/><rect x=\"14\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"1\" y=\"12\" width=\"14\" height=\"1\" fill=\"#000000\"/></svg>", "bin": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"6\" y=\"1\" width=\"4\" height=\"1\" fill=\"#8a8a8a\"/><rect x=\"6\" y=\"2\" width=\"4\" height=\"1\" fill=\"#8a8a8a\"/><rect x=\"3\" y=\"3\" width=\"10\" height=\"1\" fill=\"#8a8a8a\"/><rect x=\"3\" y=\"4\" width=\"10\" height=\"1\" fill=\"#8a8a8a\"/><rect x=\"4\" y=\"5\" width=\"8\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"6\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"6\" width=\"6\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"6\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"7\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"7\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"7\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"7\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"8\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"8\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"8\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"8\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"8\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"8\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"9\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"9\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"9\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"9\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"10\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"10\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"10\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"10\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"10\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"10\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"10\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"11\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"11\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"11\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"11\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"11\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"11\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"12\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"12\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"12\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"12\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"12\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"10\" y=\"12\" width=\"1\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"12\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"13\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"5\" y=\"13\" width=\"2\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"7\" y=\"13\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"8\" y=\"13\" width=\"3\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"11\" y=\"13\" width=\"1\" height=\"1\" fill=\"#3a3a3a\"/><rect x=\"4\" y=\"14\" width=\"8\" height=\"1\" fill=\"#3a3a3a\"/></svg>", "minesweeper": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"9\" y=\"2\" width=\"1\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"11\" y=\"2\" width=\"1\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"10\" y=\"3\" width=\"1\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"11\" y=\"4\" width=\"2\" height=\"1\" fill=\"#ff3d3d\"/><rect x=\"7\" y=\"5\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"6\" y=\"6\" width=\"4\" height=\"1\" fill=\"#000000\"/><rect x=\"5\" y=\"7\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"7\" y=\"7\" width=\"2\" height=\"1\" fill=\"#7d7d7d\"/><rect x=\"9\" y=\"7\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"5\" y=\"8\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"7\" y=\"8\" width=\"2\" height=\"1\" fill=\"#7d7d7d\"/><rect x=\"9\" y=\"8\" width=\"2\" height=\"1\" fill=\"#000000\"/><rect x=\"6\" y=\"9\" width=\"4\" height=\"1\" fill=\"#000000\"/><rect x=\"7\" y=\"10\" width=\"2\" height=\"1\" fill=\"#000000\"/></svg>", "paint": "<svg viewBox=\"0 0 16 16\" shape-rendering=\"crispEdges\"><rect x=\"11\" y=\"3\" width=\"3\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"4\" width=\"5\" height=\"1\" fill=\"#ff8080\"/><rect x=\"11\" y=\"4\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"4\" width=\"1\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"13\" y=\"4\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"5\" width=\"5\" height=\"1\" fill=\"#ff3d3d\"/><rect x=\"11\" y=\"5\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"5\" width=\"1\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"13\" y=\"5\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"6\" width=\"7\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"6\" width=\"1\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"3\" y=\"7\" width=\"7\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"7\" width=\"1\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"3\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"8\" width=\"5\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"8\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"12\" y=\"8\" width=\"1\" height=\"1\" fill=\"#8a5a2b\"/><rect x=\"3\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"9\" width=\"5\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"9\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"10\" y=\"9\" width=\"3\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"3\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"10\" width=\"5\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"10\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"10\" y=\"10\" width=\"3\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"3\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"11\" width=\"5\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"11\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"10\" y=\"11\" width=\"3\" height=\"1\" fill=\"#ffd23d\"/><rect x=\"3\" y=\"12\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"4\" y=\"12\" width=\"5\" height=\"1\" fill=\"#c3c3c3\"/><rect x=\"9\" y=\"12\" width=\"1\" height=\"1\" fill=\"#000000\"/><rect x=\"3\" y=\"13\" width=\"7\" height=\"1\" fill=\"#000000\"/></svg>" };
+
+        /* ===================== SOUND ENGINE ===================== */
+        let audioCtx = null;
+        let muted = false;
+        function ensureAudio() {
+            if (!audioCtx) {
+                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+        function tone(freq, start, dur, type = 'square', vol = 0.06) {
+            const ctx = ensureAudio();
+            if (!ctx || muted) return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(vol, ctx.currentTime + start);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+            osc.connect(gain).connect(ctx.destination);
+            osc.start(ctx.currentTime + start);
+            osc.stop(ctx.currentTime + start + dur);
+        }
+        function playChime() {
+            [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.11, 0.35, 'triangle', 0.05));
+        }
+        function playClick() { tone(1200, 0, 0.03, 'square', 0.03); }
+        function playDing() { tone(880, 0, 0.12, 'sine', 0.05); tone(1320, 0.06, 0.15, 'sine', 0.04); }
+
+        function renderMuteIcon() {
+            const el = document.getElementById('muteBtn');
+            el.innerHTML = muted
+                ? `<svg viewBox="0 0 16 16"><path d="M2 6h3l4-4v12l-4-4H2z" fill="#000"/><line x1="10" y1="5" x2="15" y2="11" stroke="#c00" stroke-width="2"/><line x1="15" y1="5" x2="10" y2="11" stroke="#c00" stroke-width="2"/></svg>`
+                : `<svg viewBox="0 0 16 16"><path d="M2 6h3l4-4v12l-4-4H2z" fill="#000"/><path d="M11 4c2 2 2 6 0 8" fill="none" stroke="#000" stroke-width="1.4"/><path d="M13 2c3 3 3 9 0 12" fill="none" stroke="#000" stroke-width="1.4"/></svg>`;
+        }
+        renderMuteIcon();
+        document.getElementById('muteBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            muted = !muted;
+            renderMuteIcon();
+        });
+        document.addEventListener('click', () => ensureAudio(), { once: true });
+
+        // Apply CONFIG branding
+        document.title = CONFIG.siteName + '.EXE';
+        document.getElementById('pageTitle').textContent = CONFIG.siteName + '.EXE';
+
+        /* ===================== BOOT SEQUENCE ===================== */
+        const biosLines = [
+            "AWARD MODULAR BIOS v4.51PG",
+            "CPU: PIXEL-CORE 486 DX2 @ 66MHz",
+            "Memory Test: 65536K OK",
+            "Detecting Portfolio Drive... FOUND",
+            "Loading DESIGN.SYS ..........",
+            "Loading GRAPHICS.DRV .........",
+            "Starting " + CONFIG.siteName + " " + CONFIG.siteVersion + "..."
+        ];
+        const biosEl = document.getElementById('biosText');
+        document.getElementById('bootCaption').textContent = CONFIG.siteName + ' ' + CONFIG.siteVersion;
+        document.getElementById('startBannerText').textContent = CONFIG.siteName + ' ' + CONFIG.siteVersion;
+        let li = 0;
+        function typeLine() {
+            if (li >= biosLines.length) return;
+            const p = document.createElement('div');
+            biosEl.appendChild(p);
+            let ci = 0, line = biosLines[li];
+            const iv = setInterval(() => {
+                p.textContent = line.slice(0, ci++);
+                if (ci > line.length) {
+                    clearInterval(iv);
+                    li++;
+                    setTimeout(typeLine, 90);
+                }
+            }, 14);
+        }
+        typeLine();
+
+        setTimeout(() => {
+            document.querySelectorAll('#logoBuild div').forEach((d, i) => {
+                setTimeout(() => d.classList.add('show'), i * 70);
+            });
+        }, 700);
+
+        setTimeout(() => { document.getElementById('progressBar').style.width = '100%'; }, 1300);
+
+        setTimeout(() => {
+            const boot = document.getElementById('boot');
+            boot.style.transition = 'opacity .5s ease';
+            boot.style.opacity = '0';
+            playChime();
+            setTimeout(() => boot.remove(), 550);
+        }, 3900);
+
+        /* ===================== CLOCK ===================== */
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours(); const m = now.getMinutes();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12; if (h === 0) h = 12;
+            document.getElementById('clock').textContent =
+                `${h}:${m.toString().padStart(2, '0')} ${ampm}`;
+        }
+        updateClock(); setInterval(updateClock, 1000 * 30);
+
+        /* ===================== WINDOW CONTENT ===================== */
+        const winData = {
+            about: {
+                title: 'About_Me.txt - Notepad',
+                icon: `<svg viewBox="0 0 32 32"><rect x="4" y="2" width="24" height="28" fill="#fff" stroke="#000"/><rect x="4" y="2" width="24" height="4" fill="#000878"/></svg>`,
+                menubar: true,
+                w: 420, h: 340,
+                body: `
+      <h2 class="doc-title">${CONFIG.aboutTitle}</h2>
+      ${CONFIG.aboutText}
+    `
+            },
+            projects: {
+                title: 'My Projects',
+                icon: `<svg viewBox="0 0 32 32"><path d="M2 8 L2 26 L30 26 L30 10 L16 10 L13 6 L2 6 Z" fill="#ffd23d" stroke="#000"/></svg>`,
+                menubar: true,
+                explorer: true,
+                w: 500, h: 380,
+                body: `
+      <div class="proj-grid">
+        ${CONFIG.projects.map((proj, i) => `
+          <div class="proj-item" onclick="alert('Edit CONFIG.projects[${i}] to customize this project')">
+            <svg class="proj-thumb" viewBox="0 0 64 64">
+              <rect width="64" height="64" fill="${proj.color2}"/>
+              <rect x="10" y="10" width="44" height="44" fill="${proj.color1}"/>
+              <rect x="20" y="20" width="24" height="24" fill="${proj.color2}"/>
+            </svg>
+            <span>${proj.title}</span>
+          </div>
+        `).join('')}
+      </div>
+    `
+            },
+            branding: {
+                title: 'Logo_Lab.exe - Sketchbook',
+                icon: `<svg viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" fill="#fff" stroke="#000"/><circle cx="16" cy="14" r="7" fill="none" stroke="#3d7bff" stroke-width="3"/></svg>`,
+                menubar: true,
+                w: 460, h: 380,
+                body: `
+      <h2 class="doc-title">DESIGNS & EXPERIMENTS</h2>
+      <p style="margin-top:-4px; color:#666;">Add your design work, sketches, and experiments here.</p>
+      <div style="display:flex; gap:12px; margin:14px 0; flex-wrap:wrap;">
+        <svg width="60" height="60" viewBox="0 0 60 60" style="border:2px solid #808080; background:#fff;">
+          <circle cx="30" cy="30" r="22" fill="none" stroke="#000878" stroke-width="5"/>
+          <rect x="22" y="22" width="16" height="16" fill="#ffd23d"/>
+        </svg>
+        <svg width="60" height="60" viewBox="0 0 60 60" style="border:2px solid #808080; background:#fff;">
+          <polygon points="30,8 52,45 8,45" fill="#ff6b6b"/>
+          <polygon points="30,20 42,42 18,42" fill="#fff"/>
+        </svg>
+        <svg width="60" height="60" viewBox="0 0 60 60" style="border:2px solid #808080; background:#fff;">
+          <rect x="10" y="10" width="40" height="40" fill="#3dff5d"/>
+          <circle cx="30" cy="30" r="14" fill="#003a1a"/>
+        </svg>
+        <svg width="60" height="60" viewBox="0 0 60 60" style="border:2px solid #808080; background:#fff;">
+          <path d="M10 45 L30 10 L50 45 Z" fill="none" stroke="#c33dff" stroke-width="5"/>
+        </svg>
+      </div>
+    `
+            },
+            contact: {
+                title: 'Contact_Me.eml - Message',
+                icon: `<svg viewBox="0 0 32 32"><rect x="2" y="6" width="28" height="20" fill="#fff" stroke="#000"/><path d="M2 6 L16 18 L30 6" fill="none" stroke="#000"/></svg>`,
+                menubar: false,
+                w: 380, h: 320,
+                body: `
+      <h2 class="doc-title">GET IN TOUCH</h2>
+      <div class="field"><label>NAME</label><input type="text" placeholder="Your name"></div>
+      <div class="field"><label>EMAIL</label><input type="text" placeholder="your@email.com"></div>
+      <div class="field"><label>MESSAGE</label><textarea rows="4" placeholder="Say hello..."></textarea></div>
+      <button class="btn95" onclick="alert('${CONFIG.contactNote}')">SEND MAIL</button>
+    `
+            },
+            bin: {
+                title: 'Recycle Bin',
+                icon: `<svg viewBox="0 0 32 32"><rect x="8" y="10" width="16" height="18" fill="#c3c3c3" stroke="#000"/></svg>`,
+                menubar: false,
+                w: 320, h: 200,
+                body: `<p style="text-align:center; margin-top:30px; color:#888;">The Recycle Bin is empty.</p>`
+            },
+            minesweeper: {
+                title: 'Minesweeper',
+                icon: `<svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" fill="#c3c3c3" stroke="#000"/><circle cx="16" cy="16" r="9" fill="#000"/></svg>`,
+                menubar: false,
+                w: 260, h: 330,
+                body: `
+      <div class="ms-wrap">
+        <div class="ms-header">
+          <div class="ms-counter" id="msMineCount">010</div>
+          <div class="ms-face" id="msFace">🙂</div>
+          <div class="ms-counter" id="msTimer">000</div>
+        </div>
+        <div class="ms-grid" id="msGrid"></div>
+        <div class="ms-status">Left click to reveal · right click to flag</div>
+      </div>
+    `
+            },
+            paint: {
+                title: 'Paint.exe - untitled',
+                icon: `<svg viewBox="0 0 32 32"><rect x="4" y="10" width="14" height="16" fill="#c3c3c3" stroke="#000"/><rect x="4" y="8" width="14" height="3" fill="#000"/></svg>`,
+                menubar: true,
+                w: 430, h: 420,
+                body: `
+      <div class="paint-wrap">
+        <div class="paint-toolbar">
+          <div class="paint-tools">
+            <button class="pt-btn active" data-tool="pencil" title="Pencil">&#9998;</button>
+            <button class="pt-btn" data-tool="eraser" title="Eraser">&#9633;</button>
+            <button class="pt-btn" data-action="clear" title="Clear canvas">CLR</button>
+            <button class="pt-btn" data-action="save" title="Save as PNG"><svg viewBox="0 0 16 16" style="width:100%;height:100%;fill:currentColor"><rect x="2" y="2" width="12" height="12" fill="#000"/><rect x="3" y="3" width="10" height="8" fill="#fff"/><rect x="4" y="4" width="2" height="2" fill="#000"/><rect x="4" y="7" width="6" height="1" fill="#000"/><rect x="4" y="9" width="8" height="2" fill="#000"/></svg></button>
+          </div>
+          <div class="paint-palette" id="paintPalette"></div>
+        </div>
+        <canvas id="paintCanvas" width="320" height="320"></canvas>
+        <div class="ms-status">Click and drag to draw · pick a color below</div>
+      </div>
+    `
+            }
+        };
+
+        /* Swap in hand-built pixel-art icons for desktop, start menu, and window chrome */
+        Object.keys(PIXEL_ICONS).forEach(key => {
+            if (winData[key]) winData[key].icon = PIXEL_ICONS[key];
+        });
+        document.querySelectorAll('[data-win]').forEach(el => {
+            const key = el.dataset.win;
+            if (!PIXEL_ICONS[key]) return;
+            const svg = el.querySelector('svg');
+            if (svg) svg.outerHTML = PIXEL_ICONS[key];
+        });
+
+        /* ===================== MINESWEEPER ===================== */
+        const MS_SIZE = 9, MS_MINES = 10;
+        let ms = null;
+
+        function initMinesweeper() {
+            ms = {
+                cells: [],
+                started: false,
+                over: false,
+                flags: 0,
+                timer: 0,
+                timerHandle: null,
+            };
+            for (let i = 0; i < MS_SIZE * MS_SIZE; i++) {
+                ms.cells.push({ mine: false, revealed: false, flagged: false, n: 0 });
+            }
+            let placed = 0;
+            while (placed < MS_MINES) {
+                const idx = Math.floor(Math.random() * ms.cells.length);
+                if (!ms.cells[idx].mine) { ms.cells[idx].mine = true; placed++; }
+            }
+            const neighbors = (idx) => {
+                const x = idx % MS_SIZE, y = Math.floor(idx / MS_SIZE);
+                const out = [];
+                for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+                    if (dx === 0 && dy === 0) continue;
+                    const nx = x + dx, ny = y + dy;
+                    if (nx >= 0 && nx < MS_SIZE && ny >= 0 && ny < MS_SIZE) out.push(ny * MS_SIZE + nx);
+                }
+                return out;
+            };
+            ms.neighbors = neighbors;
+            ms.cells.forEach((c, idx) => {
+                if (c.mine) return;
+                c.n = neighbors(idx).filter(ni => ms.cells[ni].mine).length;
+            });
+            updateMSFace('neutral');
+            document.getElementById('msTimer').textContent = '000';
+            updateMineCounter();
+            renderMinesweeper();
+        }
+
+        function updateMineCounter() {
+            const left = Math.max(0, MS_MINES - ms.flags);
+            document.getElementById('msMineCount').textContent = String(left).padStart(3, '0');
+        }
+
+        function renderMinesweeper() {
+            const grid = document.getElementById('msGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            ms.cells.forEach((c, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'ms-cell' + (c.revealed ? ' revealed' : '');
+                if (c.revealed && c.mine) cell.classList.add('mine-hit');
+                if (c.revealed && !c.mine && c.n > 0) { cell.dataset.n = c.n; cell.textContent = c.n; }
+                if (c.revealed && c.mine) cell.innerHTML = '<svg viewBox="0 0 16 16" style="width:100%;height:100%"><circle cx="8" cy="8" r="5" fill="#000"/><rect x="6" y="2" width="4" height="6" fill="#000"/></svg>';
+                if (!c.revealed && c.flagged) cell.innerHTML = '<svg viewBox="0 0 16 16" style="width:100%;height:100%"><rect x="6" y="2" width="2" height="12" fill="#c33dff"/><path d="M8 3 L14 5 L8 7 Z" fill="#ff3d3d"/></svg>';
+                cell.addEventListener('click', () => msReveal(idx));
+                cell.addEventListener('contextmenu', (e) => { e.preventDefault(); msFlag(idx); });
+                grid.appendChild(cell);
+            });
+        }
+
+        function msStartTimer() {
+            if (ms.timerHandle) return;
+            ms.timerHandle = setInterval(() => {
+                ms.timer = Math.min(999, ms.timer + 1);
+                document.getElementById('msTimer').textContent = String(ms.timer).padStart(3, '0');
+            }, 1000);
+        }
+        function msStopTimer() { clearInterval(ms.timerHandle); ms.timerHandle = null; }
+
+        function msFlag(idx) {
+            if (ms.over || ms.cells[idx].revealed) return;
+            const c = ms.cells[idx];
+            c.flagged = !c.flagged;
+            ms.flags += c.flagged ? 1 : -1;
+            updateMineCounter();
+            renderMinesweeper();
+            playClick();
+        }
+
+        function msReveal(idx) {
+            if (ms.over) return;
+            const c = ms.cells[idx];
+            if (c.flagged || c.revealed) return;
+            if (!ms.started) { ms.started = true; msStartTimer(); }
+            playClick();
+            if (c.mine) {
+                c.revealed = true;
+                ms.over = true;
+                msStopTimer();
+                ms.cells.forEach(cc => { if (cc.mine) cc.revealed = true; });
+                updateMSFace('dead');
+                playDing();
+                renderMinesweeper();
+                return;
+            }
+            const stack = [idx];
+            while (stack.length) {
+                const i = stack.pop();
+                const cc = ms.cells[i];
+                if (cc.revealed || cc.flagged) continue;
+                cc.revealed = true;
+                if (cc.n === 0) ms.neighbors(i).forEach(ni => { if (!ms.cells[ni].revealed) stack.push(ni); });
+            }
+            const won = ms.cells.every(cc => cc.mine || cc.revealed);
+            if (won) {
+                ms.over = true; msStopTimer();
+                ms.cells.forEach(cc => { if (cc.mine) cc.flagged = true; });
+                ms.flags = MS_MINES;
+                updateMineCounter();
+                updateMSFace('cool');
+                playChime();
+            }
+            renderMinesweeper();
+        }
+
+        document.addEventListener('click', (e) => {
+            const msFace = document.getElementById('msFace');
+            if ((e.target && e.target.id === 'msFace') || (msFace && msFace.contains(e.target))) {
+                initMinesweeper();
+            }
+        });
+
+        /* ===================== MINESWEEPER FACE PIXEL ART ===================== */
+        function updateMSFace(state) {
+            const face = document.getElementById('msFace');
+            if (!face) return;
+            const faces = {
+                'neutral': '<svg viewBox="0 0 16 16" style="width:100%;height:100%"><circle cx="4" cy="5" r="1" fill="#000"/><circle cx="12" cy="5" r="1" fill="#000"/><path d="M5 9 Q8 10 11 9" stroke="#000" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
+                'dead': '<svg viewBox="0 0 16 16" style="width:100%;height:100%"><line x1="3" y1="4" x2="5" y2="6" stroke="#000" stroke-width="1"/><line x1="5" y1="4" x2="3" y2="6" stroke="#000" stroke-width="1"/><line x1="11" y1="4" x2="13" y2="6" stroke="#000" stroke-width="1"/><line x1="13" y1="4" x2="11" y2="6" stroke="#000" stroke-width="1"/><path d="M6 10 Q8 8 10 10" stroke="#000" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
+                'cool': '<svg viewBox="0 0 16 16" style="width:100%;height:100%"><rect x="2" y="4" width="3" height="2" fill="#000"/><rect x="11" y="4" width="3" height="2" fill="#000"/><path d="M5 9 Q8 10 11 9" stroke="#000" stroke-width="1" fill="none" stroke-linecap="round"/></svg>'
+            };
+            face.innerHTML = faces[state] || faces['neutral'];
+        }
+
+        /* ===================== PAINT ===================== */
+        const PAINT_COLORS = [
+            '#000000', '#7F7F7F', '#880015', '#ED1C24', '#FF7F27', '#FFF200', '#22B14C', '#00A2E8', '#3F48CC', '#A349A4',
+            '#FFFFFF', '#C3C3C3', '#B97A57', '#FFAEC9', '#FFC90E', '#EFE4B0', '#99D9EA', '#7092BE', '#C8BFE7', '#B5E61D'
+        ];
+        let paintState = { color: '#000000', tool: 'pencil', drawing: false, cell: 10, cols: 32, rows: 32, ctx: null };
+
+        function initPaint() {
+            const canvas = document.getElementById('paintCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            paintState.ctx = ctx;
+            paintState.color = '#000000';
+            paintState.tool = 'pencil';
+
+            const palette = document.getElementById('paintPalette');
+            palette.innerHTML = '';
+            PAINT_COLORS.forEach((c, i) => {
+                const sw = document.createElement('div');
+                sw.className = 'paint-swatch' + (i === 0 ? ' selected' : '');
+                sw.style.background = c;
+                sw.addEventListener('click', () => {
+                    paintState.color = c;
+                    paintState.tool = 'pencil';
+                    document.querySelectorAll('.paint-swatch').forEach(s => s.classList.remove('selected'));
+                    sw.classList.add('selected');
+                    document.querySelectorAll('.pt-btn[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === 'pencil'));
+                });
+                palette.appendChild(sw);
+            });
+
+            document.querySelectorAll('.pt-btn').forEach(btn => {
+                btn.onclick = () => {
+                    playClick();
+                    if (btn.dataset.tool) {
+                        paintState.tool = btn.dataset.tool;
+                        document.querySelectorAll('.pt-btn[data-tool]').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    }
+                    if (btn.dataset.action === 'clear') {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    if (btn.dataset.action === 'save') {
+                        const link = document.createElement('a');
+                        link.download = 'my-pixel-art.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    }
+                };
+            });
+
+            function paintAt(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+                const x = Math.floor((e.clientX - rect.left) * scaleX / paintState.cell);
+                const y = Math.floor((e.clientY - rect.top) * scaleY / paintState.cell);
+                if (x < 0 || y < 0 || x >= paintState.cols || y >= paintState.rows) return;
+                ctx.fillStyle = paintState.tool === 'eraser' ? '#ffffff' : paintState.color;
+                ctx.fillRect(x * paintState.cell, y * paintState.cell, paintState.cell, paintState.cell);
+            }
+            canvas.onmousedown = (e) => { paintState.drawing = true; paintAt(e); };
+            canvas.onmousemove = (e) => { if (paintState.drawing) paintAt(e); };
+            window.addEventListener('mouseup', () => paintState.drawing = false);
+        }
+
+        /* ===================== WINDOW MANAGER ===================== */
+        let zTop = 100;
+        const openWins = {};
+        let cascadeOffset = 0;
+
+        function openWindow(key) {
+            playClick();
+            document.body.classList.add('wait-cursor');
+            setTimeout(() => document.body.classList.remove('wait-cursor'), 280);
+            if (key === 'bin') playDing();
+            if (openWins[key]) {
+                focusWindow(key);
+                if (openWins[key].el.style.display === 'none') openWins[key].el.style.display = 'flex';
+                return;
+            }
+            const data = winData[key];
+            const el = document.createElement('div');
+            el.className = 'win';
+            
+            // Responsive window sizing
+            let winW = data.w;
+            let winH = data.h;
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            
+            if (vw <= 480) {
+                winW = Math.max(150, Math.min(data.w, vw - 20));
+                winH = Math.max(120, Math.min(data.h, vh - 70));
+            } else if (vw <= 768) {
+                winW = Math.max(200, Math.min(data.w, vw - 40));
+                winH = Math.max(150, Math.min(data.h, vh - 70));
+            } else if (vw <= 1024) {
+                winW = Math.max(250, Math.min(data.w, vw - 60));
+                winH = Math.max(200, Math.min(data.h, vh - 100));
+            }
+            
+            el.style.width = winW + 'px';
+            el.style.height = winH + 'px';
+            const centerX = Math.max(5, Math.min(vw - winW - 5, (vw - winW) / 2));
+            const centerY = Math.max(5, Math.min(vh - winH - 40, (vh - winH - 40) / 2));
+            el.style.left = centerX + 'px';
+            el.style.top = centerY + 'px';
+            el.style.zIndex = ++zTop;
+
+            el.innerHTML = `
+    <div class="titlebar">
+      <div class="tleft">
+        <div class="ticon">${data.icon}</div>
+        <span class="ttext">${data.title}</span>
+      </div>
+      <div class="tbtns">
+        <div class="tbtn" data-act="min">_</div>
+        <div class="tbtn" data-act="max">▢</div>
+        <div class="tbtn" data-act="close">×</div>
+      </div>
+    </div>
+    ${data.menubar ? `<div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>` : ``}
+    <div class="win-body ${data.explorer ? 'explorer' : ''}">${data.body}</div>
+    <div class="win-statusbar"><div class="cell">${data.explorer ? '6 object(s)' : 'Ready'}</div></div>
+  `;
+            document.getElementById('root').appendChild(el);
+            openWins[key] = { el };
+
+            el.addEventListener('mousedown', () => focusWindow(key));
+            el.querySelector('[data-act="close"]').addEventListener('click', (e) => {
+                e.stopPropagation();
+                el.remove(); delete openWins[key]; renderTaskbar();
+            });
+            el.querySelector('[data-act="min"]').addEventListener('click', (e) => {
+                e.stopPropagation();
+                el.style.display = 'none'; renderTaskbar();
+            });
+            el.querySelector('[data-act="max"]').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (el.dataset.maxed === '1') {
+                    el.style.width = data.w + 'px'; el.style.height = data.h + 'px';
+                    el.style.left = el.dataset.prevLeft; el.style.top = el.dataset.prevTop;
+                    el.dataset.maxed = '0';
+                } else {
+                    el.dataset.prevLeft = el.style.left; el.dataset.prevTop = el.style.top;
+                    el.style.left = '4px'; el.style.top = '4px';
+                    el.style.width = 'calc(100vw - 12px)'; el.style.height = 'calc(100vh - 44px)';
+                    el.dataset.maxed = '1';
+                }
+            });
+
+            makeDraggable(el, el.querySelector('.titlebar'));
+            if (key === 'minesweeper') initMinesweeper();
+            if (key === 'paint') initPaint();
+            focusWindow(key);
+            renderTaskbar();
+        }
+
+        function focusWindow(key) {
+            Object.entries(openWins).forEach(([k, w]) => {
+                w.el.classList.toggle('inactive', k !== key);
+            });
+            openWins[key].el.style.zIndex = ++zTop;
+            renderTaskbar(key);
+        }
+
+        function makeDraggable(win, handle) {
+            let sx, sy, ox, oy, dragging = false;
+            handle.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.tbtn')) return;
+                dragging = true;
+                sx = e.clientX; sy = e.clientY;
+                ox = win.offsetLeft; oy = win.offsetTop;
+                e.preventDefault();
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!dragging) return;
+                win.style.left = Math.max(0, ox + (e.clientX - sx)) + 'px';
+                win.style.top = Math.max(0, oy + (e.clientY - sy)) + 'px';
+            });
+            window.addEventListener('mouseup', () => dragging = false);
+        }
+
+        function renderTaskbar(activeKey) {
+            const bar = document.getElementById('taskApps');
+            bar.innerHTML = '';
+            Object.entries(openWins).forEach(([k, w]) => {
+                const btn = document.createElement('div');
+                btn.className = 'task-btn' + (k === activeKey && w.el.style.display !== 'none' ? ' active' : '');
+                btn.innerHTML = `${winData[k].icon}<span>${winData[k].title.split(' - ')[0]}</span>`;
+                btn.addEventListener('click', () => {
+                    if (w.el.style.display === 'none') { w.el.style.display = 'flex'; focusWindow(k); }
+                    else if (k === activeKey) { w.el.style.display = 'none'; renderTaskbar(); }
+                    else { focusWindow(k); }
+                });
+                bar.appendChild(btn);
+            });
+        }
+
+        /* ===================== ICON / DESKTOP INTERACTION ===================== */
+        let lastClickTime = {};
+        document.querySelectorAll('.icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const iconId = icon.dataset.win;
+                const now = Date.now();
+                
+                // Check for double-click
+                if (lastClickTime[iconId] && now - lastClickTime[iconId] < 300) {
+                    openWindow(iconId);
+                    lastClickTime[iconId] = 0;
+                    return;
+                }
+                
+                lastClickTime[iconId] = now;
+                document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
+                icon.classList.add('selected');
+            });
+            icon.addEventListener('dblclick', () => openWindow(icon.dataset.win));
+            icon.addEventListener('keydown', (e) => { if (e.key === 'Enter') openWindow(icon.dataset.win); });
+        });
+        document.getElementById('desktop').addEventListener('click', (e) => {
+            if (e.target.id === 'desktop') document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
+        });
+
+        /* ===================== CONTEXT MENUS ===================== */
+        function closeCtxMenu() {
+            const existing = document.getElementById('ctxMenu');
+            if (existing) existing.remove();
+        }
+        function showCtxMenu(x, y, items) {
+            closeCtxMenu();
+            const menu = document.createElement('div');
+            menu.id = 'ctxMenu';
+            menu.className = 'ctx-menu';
+            items.forEach(it => {
+                if (it.sep) { const s = document.createElement('div'); s.className = 'ctx-sep'; menu.appendChild(s); return; }
+                const row = document.createElement('div');
+                row.className = 'ctx-item' + (it.disabled ? ' disabled' : '');
+                row.textContent = it.label;
+                if (!it.disabled) row.addEventListener('click', () => { playClick(); it.action && it.action(); closeCtxMenu(); });
+                menu.appendChild(row);
+            });
+            document.body.appendChild(menu);
+            const mw = menu.offsetWidth, mh = menu.offsetHeight;
+            menu.style.left = Math.min(x, window.innerWidth - mw - 6) + 'px';
+            menu.style.top = Math.min(y, window.innerHeight - mh - 40) + 'px';
+        }
+        document.addEventListener('click', closeCtxMenu);
+        document.addEventListener('contextmenu', (e) => {
+            if (!e.target.closest('.icon') && !e.target.closest('#desktop')) closeCtxMenu();
+        });
+
+        document.querySelectorAll('.icon').forEach(icon => {
+            icon.addEventListener('contextmenu', (e) => {
+                e.preventDefault(); e.stopPropagation();
+                document.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
+                icon.classList.add('selected');
+                const key = icon.dataset.win;
+                const name = icon.querySelector('span').textContent;
+                showCtxMenu(e.clientX, e.clientY, [
+                    { label: 'Open', action: () => openWindow(key) },
+                    { sep: true },
+                    { label: 'Delete', action: () => alert(`"${name}" is a protected system file and can't be deleted.`) },
+                    { label: 'Rename', disabled: true },
+                    { sep: true },
+                    { label: 'Properties', action: () => alert(`${name}\nType: Portfolio Item\nLocation: Desktop\n\nDouble-click to open.`) },
+                ]);
+            });
+        });
+
+        document.getElementById('desktop').addEventListener('contextmenu', (e) => {
+            if (e.target.id !== 'desktop') return;
+            e.preventDefault();
+            showCtxMenu(e.clientX, e.clientY, [
+                { label: 'Arrange Icons', disabled: true },
+                { label: 'Refresh', action: () => location.reload() },
+                { sep: true },
+                { label: 'Properties', action: () => openWindow('about') },
+            ]);
+        });
+
+        /* ===================== START MENU ===================== */
+        const startMenu = document.getElementById('startMenu');
+        const startBtn = document.getElementById('startBtn');
+        startBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            playClick();
+            startMenu.classList.toggle('open');
+            startBtn.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!startMenu.contains(e.target) && e.target !== startBtn) {
+                startMenu.classList.remove('open');
+                startBtn.classList.remove('active');
+            }
+        });
+        document.querySelectorAll('.sm-item[data-win]').forEach(item => {
+            item.addEventListener('click', () => {
+                openWindow(item.dataset.win);
+                startMenu.classList.remove('open');
+                startBtn.classList.remove('active');
+            });
+        });
+        document.getElementById('shutdownBtn').addEventListener('click', () => {
+            document.getElementById('root').innerHTML = `
+    <div style="position:fixed; inset:0; background:#000; color:#fff; font-family:'VT323',monospace;
+      font-size:24px; display:flex; align-items:center; justify-content:center; text-align:center;">
+      It's now safe to close this tab.<br><br>(Thanks for stopping by!)
+    </div>`;
+        });
+
+        /* open About by default so the page doesn't look empty */
+        setTimeout(() => openWindow('about'), 4100);
+    </script>
+</body>
+
+</html>
